@@ -29,7 +29,6 @@ namespace Ateam {
         System.Random Rand = new System.Random(4);
 
         override public void UpdateAI () {
-            //Debug.Log(((int)time / 120) % 3);
             ActToEnemy(0,0);
             ActToEnemy(1,1);
             ActToEnemy(2,2);
@@ -37,63 +36,100 @@ namespace Ateam {
 
         //Žw’è‚µ‚½“G‚Ì•ûŒü‚É“®‚­
         private void ActToEnemy (int player,int enemy) {
-            //Debug.Log(GetTeamCharacterDataList(TEAM_TYPE.PLAYER).Count);
             //’Pƒ‚É•ûŒü‚ðŒˆ‚ß‚é
 
-            //xy”äŠr
-            if(Math.Abs(GetX_Distance(player,enemy)) > Math.Abs(GetY_Distance(player,enemy))) {
-                if(GetX_Distance(player,enemy) >= 0) {
-                    if(GetX_Distance(player,enemy) > 1) {
-                        Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
+            if(IsSetItem && player == 0) {
+                //xy”äŠr
+                if(Math.Abs(GetIX_Distance(player,enemy)) > Math.Abs(GetIY_Distance(player,enemy))) {
+                    if(GetIX_Distance(player,enemy) >= 0) {
+                        if(GetIX_Distance(player,enemy) > 1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
+                        }
+                    } else if(GetIX_Distance(player,enemy) < 0) {
+                        if(GetIX_Distance(player,enemy) < -1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.UP);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.UP);
+                        }
                     } else {
-                        Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
+
                     }
-                } else if(GetX_Distance(player,enemy) < 0) {
-                    if(GetX_Distance(player,enemy) < -1) {
-                        Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
+                } else if(GetIX_Distance(player,enemy) < GetIY_Distance(player,enemy)) {
+                    if(GetIY_Distance(player,enemy) > 0) {
+                        if(GetIY_Distance(player,enemy) > 1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
+                        }
+                    } else if(GetIY_Distance(player,enemy) < 0) {
+                        if(GetIY_Distance(player,enemy) < -1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
+                        }
                     } else {
-                        Move(playerActorID[player],Common.MOVE_TYPE.UP);
                     }
                 } else {
 
-                }
-            } else if(GetX_Distance(player,enemy) < GetY_Distance(player,enemy)) {
-                if(GetY_Distance(player,enemy) > 0) {
-                    if(GetY_Distance(player,enemy) > 1) {
-                        Move(playerActorID[player],Common.MOVE_TYPE.UP);
-                    } else {
-                        Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
-                    }
-                } else if(GetY_Distance(player,enemy) < 0) {
-                    if(GetY_Distance(player,enemy) < -1) {
-                        Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
-                    } else {
-                        Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
-                    }
-                } else {
                 }
             } else {
+                //xy”äŠr
+                if(Math.Abs(GetX_Distance(player,enemy)) > Math.Abs(GetY_Distance(player,enemy))) {
+                    if(GetX_Distance(player,enemy) >= 0) {
+                        if(GetX_Distance(player,enemy) > 1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
+                        }
+                    } else if(GetX_Distance(player,enemy) < 0) {
+                        if(GetX_Distance(player,enemy) < -1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.UP);
+                        }
+                    } else {
 
-            }
+                    }
+                } else if(GetX_Distance(player,enemy) < GetY_Distance(player,enemy)) {
+                    if(GetY_Distance(player,enemy) > 0) {
+                        if(GetY_Distance(player,enemy) > 1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.UP);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.LEFT);
+                        }
+                    } else if(GetY_Distance(player,enemy) < 0) {
+                        if(GetY_Distance(player,enemy) < -1) {
+                            Move(playerActorID[player],Common.MOVE_TYPE.DOWN);
+                        } else {
+                            Move(playerActorID[player],Common.MOVE_TYPE.RIGHT);
+                        }
+                    } else {
+                    }
+                } else {
 
-            if(Rand.Next(4)<1) {
-                for(int i = 0;i < playerActorID.Count;i++) {
-                    switch(Rand.Next(4)) {
-                        case 0:
-                        Move(playerActorID[i],Common.MOVE_TYPE.RIGHT);
-                        break;
+                }
 
-                        case 1:
-                        Move(playerActorID[i],Common.MOVE_TYPE.LEFT);
-                        break;
+                if(Rand.Next(4) < 1) {
+                    for(int i = 0;i < playerActorID.Count;i++) {
+                        switch(Rand.Next(4)) {
+                            case 0:
+                            Move(playerActorID[i],Common.MOVE_TYPE.RIGHT);
+                            break;
 
-                        case 2:
-                        Move(playerActorID[i],Common.MOVE_TYPE.UP);
-                        break;
+                            case 1:
+                            Move(playerActorID[i],Common.MOVE_TYPE.LEFT);
+                            break;
 
-                        case 3:
-                        Move(playerActorID[i],Common.MOVE_TYPE.DOWN);
-                        break;
+                            case 2:
+                            Move(playerActorID[i],Common.MOVE_TYPE.UP);
+                            break;
+
+                            case 3:
+                            Move(playerActorID[i],Common.MOVE_TYPE.DOWN);
+                            break;
+                        }
                     }
                 }
             }
@@ -137,6 +173,16 @@ namespace Ateam {
             return (GetTeamCharacterDataList(TEAM_TYPE.ENEMY)[enemy].BlockPos.y - GetTeamCharacterDataList(TEAM_TYPE.PLAYER)[player].BlockPos.y);
         }
 
+        //xŽ²•ûŒü‚Ì‹——£‚ðŽæ“¾‚·‚é
+        public float GetIX_Distance (int player,int enemy) {
+            return (IsItemData.BlockPos.x - GetTeamCharacterDataList(TEAM_TYPE.PLAYER)[player].BlockPos.x);
+        }
+
+        //yŽ²•ûŒü‚Ì‹——£‚ðŽæ“¾‚·‚é
+        public float GetIY_Distance (int player,int enemy) {
+            return (IsItemData.BlockPos.y - GetTeamCharacterDataList(TEAM_TYPE.PLAYER)[player].BlockPos.y);
+        }
+
         //---------------------------------------------------
         // ItemSpawnCallback
         //---------------------------------------------------
@@ -145,7 +191,7 @@ namespace Ateam {
 
         override public void ItemSpawnCallback (ItemSpawnData itemData) {
             SetItemData(itemData);
-            IsSetItem=true;
+            //IsSetItem = true;
         }
 
         public void SetItemData (ItemSpawnData data) {
