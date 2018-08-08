@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace Ateam {
     public class Echo : BaseBattleAISystem {
         private List<int> playerActorID = new List<int>();
+        float time = 0;
         //private List<int> enemyActorID = new List<int>();
 
         //---------------------------------------------------
@@ -28,6 +30,7 @@ namespace Ateam {
         System.Random Rand = new System.Random(4);
 
         override public void UpdateAI () {
+            time++;
             /*for(int i = 0;i < playerActorID.Count;i++) {
                 switch(Rand.Next(4)) {
                     case 0:
@@ -48,32 +51,79 @@ namespace Ateam {
                 }
             }*/
 
+            Debug.Log(((int)time / 120) % 3);
+            ActToEnemy(((int)time / 120) % 3);
+
+
+        }
+
+        //指定した敵の方向に動く
+        private void ActToEnemy (int enemy) {
             //単純に方向を決める
             for(int i = 0;i < 3;i++) {
                 //xy比較
-                if(GetX_Distance(0,0)< GetY_Distance(0,0)) {
-                    if(GetX_Distance(0,0) > 0) {
-                        Move(playerActorID[i],Common.MOVE_TYPE.RIGHT);
+                if(Math.Abs(GetX_Distance(i,enemy)) > Math.Abs(GetY_Distance(i,enemy))) {
+                    if(GetX_Distance(i,enemy) >= 0) {
+                        if(GetX_Distance(i,enemy) > 1) {
+                            Move(playerActorID[i],Common.MOVE_TYPE.RIGHT);
+                        } else {
+                            Move(playerActorID[i],Common.MOVE_TYPE.RIGHT);
+                        }
+                    } else if(GetX_Distance(i,enemy) < 0) {
+                        if(GetX_Distance(i,enemy) < -1) {
+                            Move(playerActorID[i],Common.MOVE_TYPE.LEFT);
+                        } else {
+                            Move(playerActorID[i],Common.MOVE_TYPE.LEFT);
+                        }
                     } else {
-                        Move(playerActorID[i],Common.MOVE_TYPE.LEFT);
+
+                    }
+                } else if(GetX_Distance(i,enemy) < GetY_Distance(i,enemy)) {
+                    if(GetY_Distance(i,enemy) > 0) {
+                        if(GetY_Distance(i,enemy) > 1) {
+                            Move(playerActorID[i],Common.MOVE_TYPE.UP);
+                        } else {
+                            Move(playerActorID[i],Common.MOVE_TYPE.UP);
+                        }
+                    } else if(GetY_Distance(i,enemy) < 0) {
+                        if(GetY_Distance(i,enemy) < -1) {
+                            Move(playerActorID[i],Common.MOVE_TYPE.DOWN);
+                        } else {
+                            Move(playerActorID[i],Common.MOVE_TYPE.DOWN);
+                        }
+                    } else {
                     }
                 } else {
-                    if(GetY_Distance(0,0) > 0) {
-                        Move(playerActorID[i],Common.MOVE_TYPE.DOWN);
+
+                }
+
+                if(GetM_Distance(i,enemy) <= 4) {
+                    Action(playerActorID[0],Define.Battle.ACTION_TYPE.INVINCIBLE);
+                    Action(playerActorID[1],Define.Battle.ACTION_TYPE.INVINCIBLE);
+                    Action(playerActorID[2],Define.Battle.ACTION_TYPE.INVINCIBLE);
+                }
+
+                if(GetM_Distance(i,enemy) <= 10) {
+                    if(GetM_Distance(i,enemy) <= 3) {
+                        Action(playerActorID[0],Define.Battle.ACTION_TYPE.ATTACK_SHORT);
+                        Action(playerActorID[1],Define.Battle.ACTION_TYPE.ATTACK_SHORT);
+                        Action(playerActorID[2],Define.Battle.ACTION_TYPE.ATTACK_SHORT);
                     } else {
-                        Move(playerActorID[i],Common.MOVE_TYPE.UP);
+                        Action(playerActorID[0],Define.Battle.ACTION_TYPE.ATTACK_MIDDLE);
+                        Action(playerActorID[1],Define.Battle.ACTION_TYPE.ATTACK_MIDDLE);
+                        Action(playerActorID[2],Define.Battle.ACTION_TYPE.ATTACK_MIDDLE);
                     }
+                } else {
+                    Action(playerActorID[0],Define.Battle.ACTION_TYPE.ATTACK_LONG);
+                    Action(playerActorID[1],Define.Battle.ACTION_TYPE.ATTACK_LONG);
+                    Action(playerActorID[2],Define.Battle.ACTION_TYPE.ATTACK_LONG);
                 }
             }
-
-            Action(playerActorID[0],Define.Battle.ACTION_TYPE.ATTACK_LONG);
-            Action(playerActorID[1],Define.Battle.ACTION_TYPE.ATTACK_LONG);
-            Action(playerActorID[2],Define.Battle.ACTION_TYPE.ATTACK_LONG);
         }
 
         //マンハッタン距離を取得する
         public int GetM_Distance (int player,int enemy) {
-            return GetX_Distance(player,enemy) + GetY_Distance(player,enemy);
+            return Math.Abs(GetX_Distance(player,enemy)) + Math.Abs(GetY_Distance(player,enemy));
         }
 
         //x軸方向の距離を取得する
